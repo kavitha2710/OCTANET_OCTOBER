@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        #container {
+            width: 80%;
+            max-width: 600px;
+            margin: 100px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #333;
+        }
+        #task-list {
+            list-style: none;
+            padding: 0;
+        }
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+        .task label {
+            flex: 1;
+            text-align: left;
+        }
+        .task button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        #add-task {
+            display: flex;
+        }
+        #new-task {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #priority {
+            padding: 10px;
+        }
+        #add-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Project To-Do List</h1>
+        <div id="add-task">
+            <input type="text" id="new-task" placeholder="Add a new task" required>
+            <select id="priority">
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+            </select>
+            <button id="add-button">Add Task</button>
+        </div>
+        <ul id="task-list">
+        </ul>
+    </div>
+
+    <script>
+        const taskList = document.getElementById("task-list");
+        const newTaskInput = document.getElementById("new-task");
+        const priorityInput = document.getElementById("priority");
+        const addButton = document.getElementById("add-button");
+
+        addButton.addEventListener("click", function() {
+            const taskText = newTaskInput.value.trim();
+            const taskPriority = priorityInput.value;
+
+            if (taskText !== "") {
+                const taskItem = document.createElement("li");
+                taskItem.className = "task";
+
+                const taskLabel = document.createElement("label");
+                taskLabel.textContent = taskText + " (Priority: " + taskPriority + ")";
+                taskItem.appendChild(taskLabel);
+
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete";
+                deleteButton.className = "delete";
+                deleteButton.addEventListener("click", function() {
+                    taskList.removeChild(taskItem);
+                });
+                taskItem.appendChild(deleteButton);
+
+                // Sort tasks by priority
+                const tasks = Array.from(taskList.children);
+                tasks.push(taskItem);
+                tasks.sort((a, b) => {
+                    const aPriority = a.querySelector("label").textContent.split("(Priority: ")[1];
+                    const bPriority = b.querySelector("label").textContent.split("(Priority: ")[1];
+                    return aPriority.localeCompare(bPriority);
+                });
+                taskList.innerHTML = '';
+                tasks.forEach(task => taskList.appendChild(task));
+
+                newTaskInput.value = "";
+                priorityInput.value = "High";
+            }
+        });
+    </script>
+</body>
+</html>
